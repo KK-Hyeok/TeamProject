@@ -39,7 +39,7 @@ public class MovePoint : MonoBehaviour
     bool isDamage;
     Rigidbody rigid;
     MeshRenderer[] meshs;
-    GameObject ItemObject;
+    GameObject ItemObject
     GameObject equipWeapon;
     Weapon UseWeapon;
     float fireDelay;
@@ -54,7 +54,7 @@ public class MovePoint : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
 
-        agent = GetComponent<NavMeshAgent>();  // 추가
+        agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = true;
     }
     
@@ -175,7 +175,7 @@ public class MovePoint : MonoBehaviour
 
         fireDelay += Time.deltaTime;
         isFireReady = UseWeapon.rate < fireDelay;
-        
+
         if(Input.GetMouseButton(0) && isFireReady && !isSwap &&!isReload && DodgeStop && UseWeapon.curAmmo != 0){
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit raycastHit))
