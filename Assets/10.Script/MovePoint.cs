@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class MovePoint : MonoBehaviour
 {
-    
+
     public CharacterController characterController; // 캐릭터 컨트롤러
     public Vector3 movePoint; // 이동 위치 저장
     public Vector3 AttackPoint;
@@ -17,18 +18,17 @@ public class MovePoint : MonoBehaviour
     public GameObject[] grenades;
     private Vector3 unitPlanePosition; // 유닛의 바닥 위치 ( 거리 계산할 때 사용 )
     private NavMeshAgent agent;
-
     public float speed;      // 캐릭터 움직임 스피드
     public float rotateSpeed;
-    private float DodgeTime = 4f;
     private float CountTime;
+    private RaycastHit hit;
 
     public int ammo;
-    public int health;
+    public float health;
     public int hasGrenade;
 
     public int maxAmmo;
-    public int maxHealth;
+    public float maxHealth;
     public int maxGrenade;
 
     bool isDodge;
@@ -37,10 +37,11 @@ public class MovePoint : MonoBehaviour
     bool isReload;
     bool isFireReady = true;
     bool isDamage;
+    bool isStop;
     Rigidbody rigid;
     MeshRenderer[] meshs;
-    GameObject ItemObject
-    GameObject equipWeapon;
+    GameObject ItemObject;
+    public GameObject equipWeapon;
     Weapon UseWeapon;
     float fireDelay;
     void Start()
@@ -57,22 +58,23 @@ public class MovePoint : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = true;
     }
-    
+
+
     void Update()
     {
-    
+
         // 마우스 우클릭 이벤트가 들어왔다면
         if (Input.GetMouseButton(1))
         {
             // 카메라에서 레이저를 쏜다.
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-    
+
             // 레이저가 뭔가에 맞았다면
             if (Physics.Raycast(ray, out RaycastHit raycastHit))
             {
                 // 레이저가 맞은 위치를 목적지로 저장
                 movePoint = raycastHit.point;
-    
+
             }
         }
         // 목적지까지 거리가 0.5f 보다 멀다면
@@ -83,6 +85,19 @@ public class MovePoint : MonoBehaviour
             Move();
         }
 
+        // 오브젝트가 앞에 있으면
+        Debug.DrawRay(transform.position + Vector3.up, transform.forward * 3, Color.green);
+        isStop = Physics.Raycast(transform.position + Vector3.up, transform.forward, 3, LayerMask.GetMask("Water"));
+
+        if (Physics.Raycast(transform.position, transform.forward))
+        {
+            if (isStop)
+            {
+                movePoint = transform.position;
+            }
+        }
+
+
         Dodge();
         GetItem();
         Swap();
@@ -90,22 +105,23 @@ public class MovePoint : MonoBehaviour
         Reload();
     }
 
-
-
     void Move()
     {
-        if(isSwap || !isFireReady || isReload)
+        if (isSwap || !isFireReady || isReload)
             movePoint = transform.position;
-
+        if (Vector3.Distance(movePoint, transform.position + new Vector3(0, 1.7f, 0)) < 1.9f)
+            movePoint = transform.position;
         //agent의 위치를 계산해 movePoint로 이동
         agent.SetDestination(movePoint);
-        
         //movePoint와 Player의 백터값을 계산
-        animator.SetBool("is Run", Vector3.Distance(movePoint , transform.position) >= 1f);
-        animator.SetBool("is idle", Vector3.Distance(movePoint , transform.position) < 1f);
+        animator.SetBool("is Run", Vector3.Distance(movePoint, transform.position + new Vector3(0,1.7f,0)) >= 1.9f);
+        animator.SetBool("is idle", Vector3.Distance(movePoint, transform.position + new Vector3(0, 1.7f, 0)) < 1.9f);
     }
 
- 
+    void StopToWall()
+    {
+        
+    }
 
     void Dodge () {
         if (Input.GetKeyDown(KeyCode.Space) &&isDodge != true && Vector3.Distance(movePoint , transform.position) >= 1f) {
@@ -244,20 +260,31 @@ public class MovePoint : MonoBehaviour
 
     void GetItem()
     {
-        if (Input.GetKeyDown(KeyCode.E) && ItemObject != null) {
-            if(ItemObject.tag == "Weapon") {
+        if (Input.GetKeyDown(KeyCode.E) && ItemObject != null)
+        {
+            if (ItemObject.tag == "Weapon")
+            {
                 Item item = ItemObject.GetComponent<Item>();
                 int WeaponIndex = item.value;
                 hasWeapons[WeaponIndex] = true;
 
                 Destroy(ItemObject);
             }
+            else if (ItemObject.tag == "NPC")
+            {
+                NPC npc = ItemObject.GetComponent<NPC>();
+                npc.Enter();
+            }
         }
     }
-
+     
     void OnTriggerStay(Collider other)
     {
+
         if(other.tag == "Weapon")
+            ItemObject = other.gameObject;
+
+        else if(other.tag == "NPC")
             ItemObject = other.gameObject;
     }
 
@@ -272,7 +299,7 @@ public class MovePoint : MonoBehaviour
             Item item = other.GetComponent<Item>();
             switch(item.type){
                 case Item.Type.Ammo:
-                    ammo =+ item.value;
+                    ammo += item.value;
                     if(ammo > maxAmmo)
                         ammo = maxAmmo;
                     break;
@@ -297,6 +324,8 @@ public class MovePoint : MonoBehaviour
                 health -= enemyBullet.damage;
                 StartCoroutine(OnDamage());
             }
+
+        
         }
     }
 }

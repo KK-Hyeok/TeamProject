@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+
 public class Monster : MonoBehaviour
 {
+
     public int MaxHealth;
     public int curHealth;
     public Transform target;
     public BoxCollider meleeArea;
+    public Slider HP_slider;
+    public GameObject gameobject;
+    public GameObject[] Item;
     public bool isChase;
     public bool isAttack;
     Material mat;
@@ -63,9 +69,11 @@ public class Monster : MonoBehaviour
         if(curHealth > 0){
             mat.color = Color.white;
         }
-        else {
+        else if (curHealth <= 0){
             mat.color = Color.gray;
+
             gameObject.layer = 7; // EnemyDead layer
+            
             isChase = false;
             nav.enabled = false;
             anim.SetTrigger("isDie");
@@ -77,27 +85,39 @@ public class Monster : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        if (curHealth <= 0)
+        {
+            DropItem();
+        }
+    }
     IEnumerator Attack()
     {
         isChase = false;
         isAttack = true;
         anim.SetBool("isAttack", true);
-        
+        nav.velocity = Vector3.zero;
+        nav.updatePosition = false;
+        nav.updateRotation = false;
         yield return new WaitForSeconds(0.2f);
         meleeArea.enabled = true;
-
+        
         yield return new WaitForSeconds(1f);
         meleeArea.enabled = false;
 
-        yield return new WaitForSeconds(1f);
-        isChase = true;
+        yield return new WaitForSeconds(1f);;
         isAttack = false;
+        nav.updatePosition = true;
+        nav.updateRotation = true;
         anim.SetBool("isAttack", false);
+        isChase = true;
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        MaxHealth = gameobject.GetComponent<Monster>().MaxHealth;
+
     }
 
     // Update is called once per frame
@@ -107,13 +127,22 @@ public class Monster : MonoBehaviour
             nav.SetDestination(target.position);
             nav.isStopped = !isChase;
         }
+        curHealth = gameobject.GetComponent<Monster>().curHealth;
+        HP_slider.maxValue = MaxHealth;
+        HP_slider.value = curHealth;
     }
 
+    public void DropItem()
+    {
+        // 아이템을 드롭할 위치를 받아와서 아이템을 생성합니다.
+        Instantiate(Item[Random.Range(0, Item.Length)], (this.gameobject.transform.position + Vector3.up), Quaternion.identity);
+    }
     void FreezeVelocity()
     {
-        if(isChase){
-        rigid.velocity = Vector3.zero;
-        rigid.angularVelocity = Vector3.zero;
+        if(!isChase){
+            nav.velocity = Vector3.zero;
+            rigid.velocity = Vector3.zero;
+            rigid.angularVelocity = Vector3.zero;
         }
     }
 
