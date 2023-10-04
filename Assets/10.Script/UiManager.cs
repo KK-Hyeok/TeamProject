@@ -71,9 +71,6 @@ public class UiManager : MonoBehaviour
             Number2.gameObject.SetActive(false);
         }
 
-        
-
-
         else
         {
             Number1.gameObject.SetActive(false);

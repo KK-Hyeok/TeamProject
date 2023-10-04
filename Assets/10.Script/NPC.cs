@@ -11,7 +11,6 @@ public class NPC : MonoBehaviour
     public GameObject Npc;
     public TextMeshProUGUI NPCText;
     public GameObject panel;
-    private bool waitForInput = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,10 +22,10 @@ public class NPC : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // 스페이스 바를 누르면 waitForInput를 true로 설정하여 코드 중단을 해제합니다.
-            waitForInput = false;
+            // ESC를 누르면 waitForInput를 true로 설정하여 코드 중단을 해제합니다.
+            Exit();
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && panel.activeSelf == false)
         {
             clickCount = 0;
         }
@@ -34,13 +33,13 @@ public class NPC : MonoBehaviour
             if (clickCount == 0 && panel.activeSelf == true)
             {
                 NPCText.text = "A";
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
                     { clickCount++; }
             }
             else if (clickCount == 1 && panel.activeSelf == true)
             {
                 NPCText.text = "B";
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
                 { clickCount++; }
 
             }
@@ -48,8 +47,13 @@ public class NPC : MonoBehaviour
             else if (clickCount == 2 && panel.activeSelf == true)
             {
                 NPCText.text = "C";
-                panel.SetActive(false);
-                waitForInput = false;
+                if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
+                { clickCount++; }
+
+            }
+            else if (clickCount == 3 && panel.activeSelf == true)
+            {
+                Exit();
             }
         }
     }
@@ -57,28 +61,14 @@ public class NPC : MonoBehaviour
     public void Enter()
     {
         panel.SetActive(true);
-        StartWaitingForInput();
+        Time.timeScale = 0;
     }
 
-    public void Next()
+    public void Exit()
     {
-        waitForInput = true;
-    }
-    IEnumerator WaitForInput()
-    {
-        // 특정 조건이 충족될 때까지 대기합니다.
-        while (waitForInput)
-        {
-            yield return null; // 다음 프레임까지 대기
-        }
-
-        // 특정 조건이 충족되면 이곳에서 다음 코드를 실행합니다.
-        Debug.Log("Input received!");
-    }
-
-    public void StartWaitingForInput()
-    {
-        waitForInput = true;
-        StartCoroutine(WaitForInput());
+        panel.SetActive(false);
+        NPCText.text = " ";
+        Time.timeScale = 1;
+        clickCount = 0;
     }
 }
