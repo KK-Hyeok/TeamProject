@@ -29,7 +29,6 @@ public class UiManager : MonoBehaviour
     public GameObject gameoverUI;
     public GameObject Handgun;
     public GameObject Submachinegun;
-
     GameObject Player;
 
     // Start is called before the first frame update
@@ -77,8 +76,25 @@ public class UiManager : MonoBehaviour
             Number2.gameObject.SetActive(false);
             Number3.gameObject.SetActive(false);
         }
+
     }
 
+    public void GameOver()
+    {
+        gameoverUI.gameObject.SetActive(true);
+    }
 
+    public void Restart()
+    {
+        SceneManager.LoadScene(0);
+    }
 
+    public void GameEnd()
+    {
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #else
+        Application.Quit();
+    #endif
+    }
 }

@@ -57,11 +57,11 @@ public class NPC : MonoBehaviour
             }
         }
     }
-
     public void Enter()
     {
         panel.SetActive(true);
         Time.timeScale = 0;
+
     }
 
     public void Exit()

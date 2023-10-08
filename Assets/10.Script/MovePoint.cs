@@ -12,6 +12,7 @@ public class MovePoint : MonoBehaviour
     public Vector3 AttackPoint;
     public Camera mainCamera; // 메인 카메라
     public Vector3 cameraOffset; // 카메라 
+    public UiManager UiManager;
     public Animator animator; // 애니메이터
     public GameObject[] weapons;
     public bool[] hasWeapons;
@@ -38,6 +39,7 @@ public class MovePoint : MonoBehaviour
     bool isFireReady = true;
     bool isDamage;
     bool isStop;
+    bool isdie = false;
     Rigidbody rigid;
     MeshRenderer[] meshs;
     GameObject ItemObject;
@@ -50,7 +52,6 @@ public class MovePoint : MonoBehaviour
         rotateSpeed = 0.1f;
         mainCamera = Camera.main;
         characterController = GetComponent<CharacterController>();
-
         animator = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
@@ -103,6 +104,10 @@ public class MovePoint : MonoBehaviour
         Swap();
         Attack();
         Reload();
+        if (health <= 0 && isdie == false)
+        {
+            OnDie();
+        }
     }
 
     void Move()
@@ -258,6 +263,12 @@ public class MovePoint : MonoBehaviour
 
     }
 
+    void OnDie()
+    {
+        animator.SetTrigger("is Die");
+        isdie = true;
+        UiManager.GameOver();
+    }
     void GetItem()
     {
         if (Input.GetKeyDown(KeyCode.E) && ItemObject != null)
