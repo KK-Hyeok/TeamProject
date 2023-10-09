@@ -16,6 +16,7 @@ public class Monster : MonoBehaviour
     public GameObject[] Item;
     public bool isChase;
     public bool isAttack;
+    public float targetRange;
     Material mat;
     Rigidbody rigid;
     BoxCollider boxCollider;
@@ -94,24 +95,27 @@ public class Monster : MonoBehaviour
     }
     IEnumerator Attack()
     {
-        isChase = false;
-        isAttack = true;
-        anim.SetBool("isAttack", true);
-        nav.velocity = Vector3.zero;
-        nav.updatePosition = false;
-        nav.updateRotation = false;
-        yield return new WaitForSeconds(0.2f);
-        meleeArea.enabled = true;
-        
-        yield return new WaitForSeconds(1f);
-        meleeArea.enabled = false;
+        if (curHealth > 0)
+        {
+            isChase = false;
+            isAttack = true;
+            anim.SetBool("isAttack", true);
+            nav.velocity = Vector3.zero;
+            nav.updatePosition = false;
+            nav.updateRotation = false;
+            yield return new WaitForSeconds(0.4f);
+            meleeArea.enabled = true;
 
-        yield return new WaitForSeconds(1f);;
-        isAttack = false;
-        nav.updatePosition = true;
-        nav.updateRotation = true;
-        anim.SetBool("isAttack", false);
-        isChase = true;
+            yield return new WaitForSeconds(0.8f);
+            meleeArea.enabled = false;
+
+            yield return new WaitForSeconds(1f); ;
+            isAttack = false;
+            nav.updatePosition = true;
+            nav.updateRotation = true;
+            anim.SetBool("isAttack", false);
+            isChase = true;
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -130,6 +134,11 @@ public class Monster : MonoBehaviour
         curHealth = gameobject.GetComponent<Monster>().curHealth;
         HP_slider.maxValue = MaxHealth;
         HP_slider.value = curHealth;
+
+        if (isAttack == true)
+        {
+
+        }
     }
 
     public void DropItem()
@@ -149,7 +158,6 @@ public class Monster : MonoBehaviour
     void Targerting()
     {
         float targetRadius = 1.5f;
-        float targetRange = 2f;
 
         RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
                                                      targetRadius, 

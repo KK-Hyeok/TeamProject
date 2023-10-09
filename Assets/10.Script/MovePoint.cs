@@ -301,11 +301,8 @@ public class MovePoint : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-            if (ItemObject.tag == "NPC")
-        {
-            NPC npc = ItemObject.GetComponent<NPC>();
-            npc.Exit();
-        }
+        
+        
     }
 
     void OnTriggerEnter(Collider other)
