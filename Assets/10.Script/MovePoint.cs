@@ -67,7 +67,7 @@ public class MovePoint : MonoBehaviour
         // 마우스 우클릭 이벤트가 들어왔다면
         if (Input.GetMouseButton(1))
         {
-            // 카메라에서 레이저를 쏜다.
+            // 카메라에서 레이를 쏜다.
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
             // 레이저가 뭔가에 맞았다면

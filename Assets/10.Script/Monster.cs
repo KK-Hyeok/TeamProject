@@ -14,9 +14,11 @@ public class Monster : MonoBehaviour
     public Slider HP_slider;
     public GameObject gameobject;
     public GameObject[] Item;
+    public bool isStop;
     public bool isChase;
     public bool isAttack;
     public float targetRange;
+    private Vector3 unitPlanePosition;
     Material mat;
     Rigidbody rigid;
     BoxCollider boxCollider;
@@ -42,7 +44,8 @@ public class Monster : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Melee"){
+        if(other.tag == "Melee" && gameObject.layer == 6)
+        {
             Weapon weapon = other.GetComponent<Weapon>();
             curHealth -= weapon.damage;
             Vector3 reactVec = transform.position - other.transform.position;
@@ -50,7 +53,8 @@ public class Monster : MonoBehaviour
             StartCoroutine(OnDamage(reactVec));
             
         }
-        else if (other.tag == "Bullet"){
+        else if (other.tag == "Bullet" && gameObject.layer == 6)
+        {
             Bullet bullet = other.GetComponent<Bullet>();
             curHealth -= bullet.damage;
             Debug.Log("Bullet : " + curHealth);
@@ -65,10 +69,12 @@ public class Monster : MonoBehaviour
     IEnumerator OnDamage(Vector3 reactVec)
     {
         mat.color = Color.red;
+        gameObject.layer = 7;
         yield return new WaitForSeconds(0.2f);
 
         if(curHealth > 0){
             mat.color = Color.white;
+            gameObject.layer = 6;
         }
         else if (curHealth <= 0){
             mat.color = Color.gray;
@@ -101,6 +107,7 @@ public class Monster : MonoBehaviour
             isAttack = true;
             anim.SetBool("isAttack", true);
             nav.velocity = Vector3.zero;
+            nav.enabled = false;
             nav.updatePosition = false;
             nav.updateRotation = false;
             yield return new WaitForSeconds(0.4f);
@@ -111,6 +118,7 @@ public class Monster : MonoBehaviour
 
             yield return new WaitForSeconds(1f); ;
             isAttack = false;
+            nav.enabled = true;
             nav.updatePosition = true;
             nav.updateRotation = true;
             anim.SetBool("isAttack", false);
@@ -127,7 +135,21 @@ public class Monster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(nav.enabled){
+        if (curHealth > 0 && isAttack == false) { 
+            if (Vector3.Distance(this.transform.position, target.position) > 30f)
+            {
+                nav.enabled = false;
+                isChase = false;
+                anim.SetBool("isWalk", false);
+            }
+            else
+            {
+                nav.enabled = true;
+                ChaseStart();
+
+            }
+    }
+            if (nav.enabled){
             nav.SetDestination(target.position);
             nav.isStopped = !isChase;
         }

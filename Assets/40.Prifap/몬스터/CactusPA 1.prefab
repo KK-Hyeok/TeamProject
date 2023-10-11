@@ -458,6 +458,7 @@ MonoBehaviour:
   Item:
   - {fileID: 1100020328430529582, guid: 4261de753b4fd35428279a10b82b8f0e, type: 3}
   - {fileID: 7126674540547252984, guid: 484c0dbf20af5ea44844c37dfe3968f1, type: 3}
+  isStop: 0
   isChase: 0
   isAttack: 0
   targetRange: 3
@@ -607,7 +608,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 2d8643687b664580b4248d279407fb7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -32,13 +32,13 @@ public class NPC : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) {
             if (clickCount == 0 && panel.activeSelf == true)
             {
-                NPCText.text = "A";
+                NPCText.text = "1,2,3번 키를 누르면 각각 해머,핸드건,서브머신건으로 바꿀 수 있어. 장전은 R키로 할 수 있고           스페이스바로 회피할 수 있어.";
                 if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
-                    { clickCount++; }
+                { clickCount++; }
             }
             else if (clickCount == 1 && panel.activeSelf == true)
             {
-                NPCText.text = "B";
+                NPCText.text = "이 맵에서는 기본을 익히고 다음 맵인 Forest에서는 직접 몬스터를 물리쳐야해.                                 마지막으로 Dungeon맵에서 보스를 물리쳐줘.";
                 if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
                 { clickCount++; }
 
@@ -46,7 +46,7 @@ public class NPC : MonoBehaviour
 
             else if (clickCount == 2 && panel.activeSelf == true)
             {
-                NPCText.text = "C";
+                NPCText.text = "그럼 행운을 빌어";
                 if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
                 { clickCount++; }
 
