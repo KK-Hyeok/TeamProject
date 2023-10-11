@@ -216,7 +216,8 @@ public class MovePoint : MonoBehaviour
     
     void Reload()
     {
-        if(Input.GetKeyDown(KeyCode.R) && UseWeapon.type == Weapon.Type.Range && !isSwap && isFireReady && DodgeStop){
+        if(Input.GetKeyDown(KeyCode.R) && UseWeapon.type == Weapon.Type.Range && !isSwap && isFireReady && DodgeStop && isReload == false)
+        {
             animator.SetTrigger("is Reload");
             isReload = true;
             Invoke("ReloadOut", 2.5f);
@@ -226,6 +227,7 @@ public class MovePoint : MonoBehaviour
     void ReloadOut()
     {
         int reAmmo = ammo < UseWeapon.maxAmmo ? ammo : UseWeapon.maxAmmo;
+        ammo += UseWeapon.curAmmo;
         UseWeapon.curAmmo = reAmmo;
         ammo -= reAmmo;
         isReload = false;
