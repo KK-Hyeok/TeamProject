@@ -86,9 +86,10 @@ public class UiManager : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("StartScene");
     }
 
+    
     public void GameEnd()
     {
     #if UNITY_EDITOR
@@ -96,5 +97,14 @@ public class UiManager : MonoBehaviour
     #else
         Application.Quit();
     #endif
+    }
+
+    public void TestS()
+    {
+        SceneManager.LoadScene("DataHoldTest");
+    }
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
     }
 }

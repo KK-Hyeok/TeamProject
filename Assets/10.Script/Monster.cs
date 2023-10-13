@@ -116,7 +116,7 @@ public class Monster : MonoBehaviour
             yield return new WaitForSeconds(0.8f);
             meleeArea.enabled = false;
 
-            yield return new WaitForSeconds(1f); ;
+            yield return new WaitForSeconds(1f);
             isAttack = false;
             nav.enabled = true;
             nav.updatePosition = true;

@@ -123,10 +123,7 @@ public class MovePoint : MonoBehaviour
         animator.SetBool("is idle", Vector3.Distance(movePoint, transform.position + new Vector3(0, 1.7f, 0)) < 1.9f);
     }
 
-    void StopToWall()
-    {
-        
-    }
+
 
     void Dodge () {
         if (Input.GetKeyDown(KeyCode.Space) &&isDodge != true && Vector3.Distance(movePoint , transform.position) >= 1f) {
@@ -176,7 +173,7 @@ public class MovePoint : MonoBehaviour
                     if(equipWeapon != weapons[WeaponIndex]){
                         animator.SetTrigger("is Swap");
                         isSwap = true;
-                        Invoke("SwapOut", 0.01f);
+                        Invoke("SwapOut", 0.3f);
                     }
                     equipWeapon = weapons[WeaponIndex];
             }
@@ -244,7 +241,7 @@ public class MovePoint : MonoBehaviour
     IEnumerator SwapDelay()
     {
 
-    yield return new WaitForSeconds(0.01f);
+    yield return new WaitForSeconds(0.3f);
 
     isSwap = false;
 
@@ -341,5 +338,9 @@ public class MovePoint : MonoBehaviour
 
         
         }
+    }
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
     }
 }
