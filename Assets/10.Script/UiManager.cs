@@ -87,6 +87,7 @@ public class UiManager : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene("StartScene");
+        gameoverUI.gameObject.SetActive(false);
     }
 
     
@@ -97,6 +98,7 @@ public class UiManager : MonoBehaviour
     #else
         Application.Quit();
     #endif
+        gameoverUI.gameObject.SetActive(false);
     }
 
     public void TestS()

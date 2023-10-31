@@ -43,6 +43,7 @@ public class MovePoint : MonoBehaviour
     Rigidbody rigid;
     MeshRenderer[] meshs;
     GameObject ItemObject;
+    NavMeshAgent nav;
     public GameObject equipWeapon;
     Weapon UseWeapon;
     float fireDelay;
@@ -55,7 +56,7 @@ public class MovePoint : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
-
+        nav = GetComponent<NavMeshAgent>();
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = true;
     }
@@ -79,7 +80,7 @@ public class MovePoint : MonoBehaviour
             }
         }
         // 목적지까지 거리가 0.5f 보다 멀다면
-        if (Vector3.Distance(unitPlanePosition, movePoint) > 0.5f)
+        if (Vector3.Distance(unitPlanePosition, movePoint) > 0.5f && !isdie)
         {
 
             // Move()함수 실행
