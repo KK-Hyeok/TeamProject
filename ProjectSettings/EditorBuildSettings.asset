@@ -9,9 +9,12 @@ EditorBuildSettings:
     path: Assets/70.Scenes/StartScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
+    path: Assets/70.Scenes/Forest.unity
+    guid: 5a94f312f93acaf468e504b035d6af37
+  - enabled: 1
+    path: Assets/70.Scenes/Dungeon.unity
+    guid: 74c37a9e59a2a3e4f9fcb312ec3e606f
+  - enabled: 1
     path: Assets/70.Scenes/TeamProject.unity
     guid: 5526bbaf389ee7d4cbdbe9ca45998e3f
-  - enabled: 1
-    path: Assets/70.Scenes/DataHoldTest.unity
-    guid: eb834a58f8ee2674dad06107272b185f
   m_configObjects: {}

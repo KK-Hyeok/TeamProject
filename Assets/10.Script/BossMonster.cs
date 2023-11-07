@@ -8,19 +8,21 @@ public class BossMonster : MonoBehaviour
 {
     public int MaxHealth;
     public int curHealth;
+    public Slider Boss_HP;
     Transform target;
     public BoxCollider meleeArea1;
     public BoxCollider meleeArea2;
     // public Slider Boss_HP;
     public GameObject gameobject;
     public GameObject[] Item;
+    public GameObject panel;
     public bool isStop;
     public bool isidle;
     public bool isAttack;
     bool isLook;
     bool isJump = false;
     bool isDefend = false;
-    bool isSummon = false;
+    bool isheal = false;
 
     float ObjectDistance;
     public float targetRange;
@@ -54,7 +56,7 @@ public class BossMonster : MonoBehaviour
         {
 
             int ranAction = Random.Range(0, 6);
-            switch (4)
+            switch (ranAction)
             {
                 case 0:
                 case 1:
@@ -69,7 +71,7 @@ public class BossMonster : MonoBehaviour
                     break;// ����
 
                 case 5:
-                    StartCoroutine(Summons());
+                    StartCoroutine(Heal());
                     break;// ��ȯ
             }
         }
@@ -94,25 +96,28 @@ public class BossMonster : MonoBehaviour
     IEnumerator Jump()
     {
         Stop();
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.6f);
         StopEnd();
         anim.SetTrigger("Jump");
         isJump = true;
         Vector3 JumpPos = target.position;
         nav.speed = 80;
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.9f);
+        Stop();
         isJump = false;
         nav.speed = 6;
+        StopEnd();
         yield return new WaitForSeconds(1.8f);
 
         StartCoroutine(Think());
     }
-    IEnumerator Summons()
+    IEnumerator Heal()
     {
-        anim.SetTrigger("Summons");
-        isSummon = true;
+        anim.SetTrigger("Heal");
+        isheal = true;
+        curHealth += (MaxHealth - curHealth)/5;
         yield return new WaitForSeconds(2.2f);
-        isSummon = false;
+        isheal = false;
         StartCoroutine(Think());
     }
 
@@ -183,7 +188,6 @@ public class BossMonster : MonoBehaviour
 
             reactVec = reactVec.normalized;
             rigid.AddForce(reactVec * 5, ForceMode.Impulse);
-
             Destroy(gameObject, 4);
         }
     }
@@ -237,7 +241,7 @@ public class BossMonster : MonoBehaviour
     }
     private void UpdateTarget()
     {
-        Collider[] cols = Physics.OverlapSphere(transform.position, 70f);
+        Collider[] cols = Physics.OverlapSphere(transform.position, 50f);
 
         if (cols.Length > 0)
         {
@@ -261,27 +265,31 @@ public class BossMonster : MonoBehaviour
         ObjectDistance = Vector3.Distance(this.transform.position, target.position);
         if (curHealth > 0 )
         {
-            if (ObjectDistance > 50f || isDefend || isSummon)
+            if (ObjectDistance > 50f || isDefend || isheal)
             {
                 Stop();
                 anim.SetBool("Walk", false);
             }
             else
             {
-
                 StopEnd();
                 ChaseStart();
 
             }
         }
+        if (ObjectDistance < 60f && curHealth > 1) { Enter(); }
+
+        else if (ObjectDistance >= 60f || curHealth <= 0) { Exit(); }
+        
+
         if (nav.enabled && !isJump)
         {
             nav.SetDestination(target.position);
             nav.isStopped = !isidle;
         }
         curHealth = gameobject.GetComponent<BossMonster>().curHealth;
-        //Boss_HP.maxValue = MaxHealth;
-        //Boss_HP.value = curHealth;
+        Boss_HP.maxValue = MaxHealth;
+        Boss_HP.value = curHealth;
 
         if (isLook && !isJump)
         {
@@ -342,4 +350,15 @@ public class BossMonster : MonoBehaviour
         Targerting();
         FreezeVelocity();
     }
+    public void Enter()
+    {
+        panel.SetActive(true);
+
+    }
+
+    public void Exit()
+    {
+        panel.SetActive(false);
+    }
 }
+

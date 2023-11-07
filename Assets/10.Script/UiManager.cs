@@ -101,10 +101,6 @@ public class UiManager : MonoBehaviour
         gameoverUI.gameObject.SetActive(false);
     }
 
-    public void TestS()
-    {
-        SceneManager.LoadScene("DataHoldTest");
-    }
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);

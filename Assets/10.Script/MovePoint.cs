@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MovePoint : MonoBehaviour
 {
@@ -83,7 +84,7 @@ public class MovePoint : MonoBehaviour
         if (Vector3.Distance(unitPlanePosition, movePoint) > 0.5f && !isdie)
         {
 
-            // Move()함수 실행
+            // Move()함 수 실행
             Move();
         }
 
@@ -119,7 +120,7 @@ public class MovePoint : MonoBehaviour
             movePoint = transform.position;
         //agent의 위치를 계산해 movePoint로 이동
         agent.SetDestination(movePoint);
-        //movePoint와 Player의 백터값을 계산
+         //movePoint와 Player의 백터값을 계산
         animator.SetBool("is Run", Vector3.Distance(movePoint, transform.position + new Vector3(0,1.7f,0)) >= 1.9f);
         animator.SetBool("is idle", Vector3.Distance(movePoint, transform.position + new Vector3(0, 1.7f, 0)) < 1.9f);
     }
@@ -307,39 +308,70 @@ public class MovePoint : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Item") {
+        if (other.tag == "Item")
+        {
             Item item = other.GetComponent<Item>();
-            switch(item.type){
+            switch (item.type)
+            {
                 case Item.Type.Ammo:
                     ammo += item.value;
-                    if(ammo > maxAmmo)
+                    if (ammo > maxAmmo)
                         ammo = maxAmmo;
                     break;
                 case Item.Type.Heart:
                     health += item.value;
-                    if(health > maxHealth)
+                    if (health > maxHealth)
                         health = maxHealth;
                     break;
                 case Item.Type.Grenade:
                     hasGrenade += item.value;
-                    if(hasGrenade > maxGrenade)
+                    if (hasGrenade > maxGrenade)
                         hasGrenade = maxGrenade;
                     break;
-                
+
 
             }
             Destroy(other.gameObject);
         }
-        else if (other.tag == "EnemyBullet"){
-            if(!isDamage){
+
+        else if (other.tag == "EnemyBullet")
+        {
+            if (!isDamage)
+            {
                 Bullet enemyBullet = other.GetComponent<Bullet>();
                 health -= enemyBullet.damage;
                 StartCoroutine(OnDamage());
             }
 
-        
+        }
+
+        else if (other.gameObject.tag == "Gate")
+        {
+            animator.SetBool("is Run", false);
+            SceneManager.LoadScene("Forest"); 
+            nav.enabled = false;
+            GameObject objectByName = GameObject.Find("SpawnPoint");
+            transform.position = objectByName.transform.position;
+            nav.enabled = true;
+            movePoint = transform.position;
+
+        }
+
+        else if (other.gameObject.tag == "Dungeon")
+        {
+            animator.SetBool("is Run", false);
+            SceneManager.LoadScene("Dungeon");
+            nav.enabled = false;
+            GameObject objectByName = GameObject.Find("SpawnPoint");
+            transform.position = objectByName.transform.position;
+            nav.enabled = true;
+            movePoint = transform.position;
+
+
+
         }
     }
+
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
